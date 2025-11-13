@@ -13,8 +13,9 @@ import ReactFlow, {
   type NodeChange,
   type NodeDragHandler,
 } from "reactflow";
+import dagre from "dagre";
 import "reactflow/dist/style.css";
-import { useGetEmployees, useUpdateEmployee, type Employee } from "../../api";
+import { useGetEmployees, useUpdateEmployee } from "../../api";
 import EmployeeNode from "./EmployeeNode";
 import styled from "styled-components";
 
@@ -49,64 +50,20 @@ const OrgChart = ({ team }: OrgChartProps) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<Node[]>([]);
 
-  // Build the tree structure from employees
+  // Build the tree structure from employees using dagre auto layout
   const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
     if (!employees.length) return { nodes: [], edges: [] };
 
     const nodes: Node[] = [];
     const edges: Edge[] = [];
     const nodeMap = new Map<string, Node>();
-    const positions = new Map<string, { x: number; y: number }>();
 
-    // Find root employees (no manager)
-    const rootEmployees = employees.filter((emp) => !emp.managerId);
-    const childrenMap = new Map<string, Employee[]>();
-
-    // Group employees by manager
-    employees.forEach((emp) => {
-      if (emp.managerId) {
-        if (!childrenMap.has(emp.managerId)) {
-          childrenMap.set(emp.managerId, []);
-        }
-        childrenMap.get(emp.managerId)!.push(emp);
-      }
-    });
-
-    // Calculate positions using a simple hierarchical layout
-    const calculatePositions = (
-      employee: Employee,
-      level: number,
-      index: number,
-      siblingCount: number
-    ) => {
-      const x = index * 250 + (siblingCount - 1) * 125;
-      const y = level * 150;
-
-      positions.set(employee.id, { x, y });
-
-      const children = childrenMap.get(employee.id) || [];
-      children.forEach((child, childIndex) => {
-        calculatePositions(
-          child,
-          level + 1,
-          index * 2 + childIndex,
-          children.length
-        );
-      });
-    };
-
-    // Calculate positions for root employees
-    rootEmployees.forEach((root, index) => {
-      calculatePositions(root, 0, index, rootEmployees.length);
-    });
-
-    // Create nodes
+    // Create nodes first (without positions)
     employees.forEach((employee) => {
-      const position = positions.get(employee.id) || { x: 0, y: 0 };
       const node: Node = {
         id: employee.id,
         type: "employee",
-        position,
+        position: { x: 0, y: 0 }, // Will be calculated by dagre
         data: {
           employee,
         },
@@ -126,6 +83,40 @@ const OrgChart = ({ team }: OrgChartProps) => {
           animated: false,
         });
       }
+    });
+
+    // Use dagre to calculate automatic layout
+    const dagreGraph = new dagre.graphlib.Graph();
+    dagreGraph.setDefaultEdgeLabel(() => ({}));
+    dagreGraph.setGraph({
+      rankdir: "TB", // Top to Bottom
+      nodesep: 100, // Horizontal spacing between nodes
+      ranksep: 150, // Vertical spacing between levels
+    });
+
+    // Add nodes to dagre graph
+    nodes.forEach((node) => {
+      dagreGraph.setNode(node.id, {
+        width: 220,
+        height: 140,
+      });
+    });
+
+    // Add edges to dagre graph
+    edges.forEach((edge) => {
+      dagreGraph.setEdge(edge.source, edge.target);
+    });
+
+    // Calculate layout
+    dagre.layout(dagreGraph);
+
+    // Apply calculated positions to nodes
+    nodes.forEach((node) => {
+      const nodeWithPosition = dagreGraph.node(node.id);
+      node.position = {
+        x: nodeWithPosition.x - 110, // Center the node (half of width)
+        y: nodeWithPosition.y - 70, // Center the node (half of height)
+      };
     });
 
     return { nodes, edges };
@@ -350,6 +341,7 @@ const OrgChart = ({ team }: OrgChartProps) => {
         onNodeDragStop={onNodeDragStop}
         nodeTypes={nodeTypes}
         fitView
+        fitViewOptions={{ padding: 0.2, maxZoom: 1.5 }}
         attributionPosition="bottom-left"
         nodesDraggable={true}
         nodesConnectable={true}
