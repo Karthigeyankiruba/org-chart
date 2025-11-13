@@ -13,6 +13,7 @@ import ReactFlow, {
   type NodeDragHandler,
 } from "reactflow";
 import dagre from "dagre";
+import toast from "react-hot-toast";
 import "reactflow/dist/style.css";
 import { useGetEmployees, useUpdateEmployee } from "../../api";
 import EmployeeNode from "./EmployeeNode";
@@ -295,12 +296,28 @@ const OrgChart = ({ team }: OrgChartProps) => {
           };
 
           if (!wouldCreateCycle(employeeBeingMoved.id, newManager.id)) {
-            console.log(
-              `Moving ${employeeBeingMoved.name} under ${newManager.name}`
+            updateEmployeeMutation.mutate(
+              {
+                id: draggedNodeId,
+                updates: { managerId: finalTargetNodeId },
+              },
+              {
+                onSuccess: () => {
+                  toast.success(
+                    `${employeeBeingMoved.name} is now reporting to ${newManager.name}`,
+                    {
+                      icon: "✅",
+                    }
+                  );
+                },
+                onError: () => {
+                  toast.error("Failed to update employee manager");
+                },
+              }
             );
-            updateEmployeeMutation.mutate({
-              id: draggedNodeId,
-              updates: { managerId: finalTargetNodeId },
+          } else {
+            toast.error("Cannot create circular reporting structure", {
+              icon: "⚠️",
             });
           }
         }
