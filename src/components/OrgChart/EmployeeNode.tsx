@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "reactflow";
 import styled from "styled-components";
+import { Avatar } from "../common/Avatar";
 import type { Employee } from "../../api";
 
 interface EmployeeNodeData {
@@ -51,17 +52,7 @@ const NodeContent = styled.div`
   gap: 12px;
 `;
 
-const Avatar = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: #3b82f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
+const AvatarWrapper = styled.div`
   flex-shrink: 0;
 `;
 
@@ -107,18 +98,8 @@ const DragHint = styled.p<{ $isTarget?: boolean }>`
   font-weight: ${(props) => (props.$isTarget ? "600" : "400")};
 `;
 
-const getInitials = (name: string): string => {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
-
 const EmployeeNode = ({ data }: NodeProps<EmployeeNodeData>) => {
   const { employee, isTarget = false, isDragging = false } = data;
-  const initials = getInitials(employee.name);
 
   return (
     <NodeContainer $isTarget={isTarget} $isDragging={isDragging}>
@@ -128,7 +109,9 @@ const EmployeeNode = ({ data }: NodeProps<EmployeeNodeData>) => {
         style={{ background: isTarget ? "#3b82f6" : "#555" }}
       />
       <NodeContent>
-        <Avatar>{initials}</Avatar>
+        <AvatarWrapper>
+          <Avatar imageUrl={employee.avatar} name={employee.name} size="48px" />
+        </AvatarWrapper>
         <EmployeeInfo>
           <EmployeeName>{employee.name}</EmployeeName>
           <EmployeeDesignation>{employee.designation}</EmployeeDesignation>

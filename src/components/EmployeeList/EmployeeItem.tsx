@@ -1,89 +1,96 @@
 import styled from "styled-components";
+import { Avatar } from "../common/Avatar";
 import type { Employee } from "../../api";
 
 interface EmployeeItemProps {
   employee: Employee;
 }
 
-const getInitials = (name: string): string => {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-};
-
 const EmployeeCard = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background-color: #f3f4f6;
-  border-radius: 8px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-background-white);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background-color 0.2s;
   width: 100%;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-gray-200);
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+
   &:hover {
-    background-color: #e5e7eb;
+    background-color: var(--color-gray-50);
+    border-color: var(--color-primary-500);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
   }
 `;
 
-const Avatar = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: #3b82f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-  flex-shrink: 0;
+const AvatarWrapper = styled.div`
+  transition: transform var(--transition-normal);
+
+  ${EmployeeCard}:hover & {
+    transform: scale(1.05);
+  }
 `;
 
 const EmployeeInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-xs);
   flex: 1;
   min-width: 0;
 `;
 
 const EmployeeName = styled.h3`
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  line-height: 1.2;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-900);
+  line-height: var(--line-height-tight);
+  transition: color var(--transition-normal);
+
+  ${EmployeeCard}:hover & {
+    color: var(--color-primary-600);
+  }
 `;
 
 const EmployeeDesignation = styled.p`
   margin: 0;
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.2;
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  line-height: var(--line-height-tight);
 `;
 
 const TeamTag = styled.span`
   display: inline-block;
-  padding: 4px 8px;
-  background-color: #dbeafe;
-  color: #1e40af;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+  padding: 4px var(--spacing-sm);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-100) 0%,
+    var(--color-primary-50) 100%
+  );
+  color: var(--color-primary-800);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
   width: fit-content;
+  border: 1px solid var(--color-primary-200);
+  transition: all var(--transition-normal);
 `;
 
 const EmployeeItem = ({ employee }: EmployeeItemProps) => {
-  const initials = getInitials(employee.name);
-
   return (
     <EmployeeCard>
-      <Avatar>{initials}</Avatar>
+      <AvatarWrapper>
+        <Avatar imageUrl={employee.avatar} name={employee.name} size="48px" />
+      </AvatarWrapper>
       <EmployeeInfo>
         <EmployeeName>{employee.name}</EmployeeName>
         <EmployeeDesignation>{employee.designation}</EmployeeDesignation>

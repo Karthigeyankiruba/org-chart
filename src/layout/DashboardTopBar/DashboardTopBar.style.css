@@ -1,8 +1,9 @@
 .dashboard-topbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  background-color: var(--color-background-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal);
 }
 
 .topbar-content {
@@ -10,17 +11,20 @@
 }
 
 .topbar-title {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0 0 0.25rem 0;
-  line-height: 1.2;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-900);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: var(--line-height-tight);
+  font-family: var(--font-family-sans);
+  letter-spacing: -0.025em;
 }
 
 .topbar-subtitle {
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
   margin: 0;
-  line-height: 1.5;
+  line-height: var(--line-height-normal);
+  font-family: var(--font-family-sans);
 }
 

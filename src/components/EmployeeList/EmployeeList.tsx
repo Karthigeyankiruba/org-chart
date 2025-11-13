@@ -8,8 +8,8 @@ const EmployeeListContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  border-radius: 8px;
+  gap: var(--spacing-md);
+  border-radius: var(--radius-md);
   width: 100%;
 `;
 
@@ -17,29 +17,59 @@ const EmployeeListHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  border-radius: 8px;
+  gap: var(--spacing-md);
+  border-radius: var(--radius-md);
   width: 100%;
+`;
+
+const HeaderTitle = styled.h2`
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-900);
+  margin: 0;
+  font-family: var(--font-family-sans);
 `;
 
 const EmployeeListBody = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border-radius: 8px;
+  justify-content: flex-start;
+  gap: var(--spacing-md);
+  border-radius: var(--radius-md);
   width: 100%;
   height: 100%;
   overflow-y: auto;
+  padding: var(--spacing-xs) 0;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: var(--radius-full);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: var(--radius-full);
+    transition: background var(--transition-normal);
+
+    &:hover {
+      background: var(--color-gray-400);
+    }
+  }
 `;
 
 const EmptyState = styled.div`
-  padding: 2rem;
+  padding: var(--spacing-2xl);
   text-align: center;
-  color: rgb(162, 162, 164);
-  font-size: 14px;
-  font-weight: 500;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family-sans);
 `;
 
 interface EmployeeListProps {
@@ -56,7 +86,7 @@ const EmployeeList = ({ search, team }: EmployeeListProps) => {
   return (
     <EmployeeListContainer>
       <EmployeeListHeader>
-        <h2>Employee List</h2>
+        <HeaderTitle>Employee List</HeaderTitle>
       </EmployeeListHeader>
       <EmployeeListBody>
         {isFetching ? (
