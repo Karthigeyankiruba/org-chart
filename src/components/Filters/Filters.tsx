@@ -149,16 +149,6 @@ const TeamSelect = styled.select`
     padding: var(--spacing-md);
   }
 `;
-
-const FilterBadge = styled.div`
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-xs);
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
-`;
-
 interface FiltersProps {
   search: string;
   selectedTeam: string;
@@ -174,7 +164,6 @@ const Filters = ({
 }: FiltersProps) => {
   const teams = useGetTeams();
   const teamOptions = ["All", ...(teams.data ?? [])];
-  const hasActiveFilters = search.length > 0 || selectedTeam !== "all";
 
   const handleClearSearch = () => {
     onSearchChange("");
@@ -221,14 +210,6 @@ const Filters = ({
             ))}
           </TeamSelect>
         </SelectWrapper>
-
-        {hasActiveFilters && (
-          <FilterBadge>
-            Active filters: {search && "Search"}{" "}
-            {search && selectedTeam !== "all" && "•"}{" "}
-            {selectedTeam !== "all" && `Team: ${selectedTeam}`}
-          </FilterBadge>
-        )}
       </FiltersBody>
     </FiltersContainer>
   );
