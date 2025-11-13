@@ -20,18 +20,16 @@ import "reactflow/dist/style.css";
 import { useGetEmployees, useUpdateEmployee } from "../../api";
 import EmployeeNode from "./EmployeeNode";
 import { FlowContainer } from "./OrgChart.styles";
+import { useFilters } from "../../contexts/FilterContext";
 
 const nodeTypes: NodeTypes = {
   employee: EmployeeNode,
 };
 
-interface OrgChartProps {
-  team?: string;
-}
-
-const OrgChart = ({ team }: OrgChartProps) => {
+const OrgChart = () => {
+  const { selectedTeam } = useFilters();
   const navigate = useNavigate();
-  const { data: employees = [] } = useGetEmployees(undefined, team);
+  const { data: employees = [] } = useGetEmployees(undefined, selectedTeam);
   const updateEmployeeMutation = useUpdateEmployee();
   const prevEmployeesRef = useRef<string>("");
   const [draggedNodeId, setDraggedNodeId] = useState<string | null>(null);
