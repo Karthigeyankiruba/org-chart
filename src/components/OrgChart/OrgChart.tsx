@@ -17,25 +17,11 @@ import toast from "react-hot-toast";
 import "reactflow/dist/style.css";
 import { useGetEmployees, useUpdateEmployee } from "../../api";
 import EmployeeNode from "./EmployeeNode";
-import styled from "styled-components";
+import { FlowContainer } from "./OrgChart.styles";
 
 const nodeTypes: NodeTypes = {
   employee: EmployeeNode,
 };
-
-const FlowContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
-
-  .react-flow__node {
-    cursor: grab;
-  }
-
-  .react-flow__node:active {
-    cursor: grabbing;
-  }
-`;
 
 interface OrgChartProps {
   team?: string;
