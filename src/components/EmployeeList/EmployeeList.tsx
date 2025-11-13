@@ -1,5 +1,6 @@
 import EmployeeItem from "./EmployeeItem";
 import { useGetEmployees, type Employee } from "../../api";
+import { SkeletonEmployeeList } from "./EmployeeListSkeleton";
 import styled from "styled-components";
 
 const EmployeeListContainer = styled.div`
@@ -33,6 +34,14 @@ const EmployeeListBody = styled.div`
   overflow-y: auto;
 `;
 
+const EmptyState = styled.div`
+  padding: 2rem;
+  text-align: center;
+  color: rgb(162, 162, 164);
+  font-size: 14px;
+  font-weight: 500;
+`;
+
 interface EmployeeListProps {
   search?: string;
   team?: string;
@@ -51,13 +60,13 @@ const EmployeeList = ({ search, team }: EmployeeListProps) => {
       </EmployeeListHeader>
       <EmployeeListBody>
         {isFetching ? (
-          <div>Loading...</div>
+          <SkeletonEmployeeList count={5} />
         ) : employees && employees.length > 0 ? (
           employees.map((employee: Employee) => (
             <EmployeeItem key={employee.id} employee={employee} />
           ))
         ) : (
-          <div>No employees found</div>
+          <EmptyState>No employees found</EmptyState>
         )}
       </EmployeeListBody>
     </EmployeeListContainer>
