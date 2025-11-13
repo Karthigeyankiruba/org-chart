@@ -1,6 +1,5 @@
-import React from "react";
 import EmployeeItem from "./EmployeeItem";
-import { useGetEmployees } from "../../api";
+import { useGetEmployees, type Employee } from "../../api";
 import styled from "styled-components";
 
 const EmployeeListContainer = styled.div`
@@ -30,20 +29,36 @@ const EmployeeListBody = styled.div`
   gap: 12px;
   border-radius: 8px;
   width: 100%;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
 `;
 
-const EmployeeList = () => {
-  const { data: employees } = useGetEmployees();
-  console.log("employees", employees);
+interface EmployeeListProps {
+  search?: string;
+  team?: string;
+}
+
+const EmployeeList = ({ search, team }: EmployeeListProps) => {
+  const { data: employees, isFetching } = useGetEmployees(
+    search || undefined,
+    team || undefined
+  );
+
   return (
     <EmployeeListContainer>
       <EmployeeListHeader>
         <h2>Employee List</h2>
       </EmployeeListHeader>
       <EmployeeListBody>
-        {employees?.map((employee) => (
-          <EmployeeItem key={employee.id} employee={employee} />
-        ))}
+        {isFetching ? (
+          <div>Loading...</div>
+        ) : employees && employees.length > 0 ? (
+          employees.map((employee: Employee) => (
+            <EmployeeItem key={employee.id} employee={employee} />
+          ))
+        ) : (
+          <div>No employees found</div>
+        )}
       </EmployeeListBody>
     </EmployeeListContainer>
   );
