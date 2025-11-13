@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { AvatarContainer } from "./Avatar.styles";
 
 interface AvatarProps {
@@ -7,8 +8,10 @@ interface AvatarProps {
   className?: string;
 }
 
-const Avatar = ({ name, imageUrl, size = "48px", className }: AvatarProps) => {
-  const getInitials = (name: string): string => {
+const Avatar = forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
+  const { name, imageUrl, size = "48px", className } = props;
+
+  const getInitials = (name?: string): string => {
     if (!name) return "NA";
 
     return name
@@ -20,7 +23,7 @@ const Avatar = ({ name, imageUrl, size = "48px", className }: AvatarProps) => {
   };
 
   return (
-    <AvatarContainer $size={size} className={className}>
+    <AvatarContainer $size={size} className={className} ref={ref}>
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -39,6 +42,6 @@ const Avatar = ({ name, imageUrl, size = "48px", className }: AvatarProps) => {
       )}
     </AvatarContainer>
   );
-};
+});
 
 export default Avatar;
