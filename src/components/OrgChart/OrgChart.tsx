@@ -4,7 +4,6 @@ import ReactFlow, {
   type Edge,
   Background,
   Controls,
-  MiniMap,
   type Connection,
   useNodesState,
   useEdgesState,
@@ -346,10 +345,12 @@ const OrgChart = ({ team }: OrgChartProps) => {
         nodesDraggable={true}
         nodesConnectable={true}
         elementsSelectable={true}
+        proOptions={{
+          hideAttribution: true,
+        }}
       >
         <Background />
         <Controls />
-        <MiniMap />
       </ReactFlow>
     </FlowContainer>
   );

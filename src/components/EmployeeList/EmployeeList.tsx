@@ -29,7 +29,7 @@ const EmployeeListBody = styled.div`
   gap: 12px;
   border-radius: 8px;
   width: 100%;
-  max-height: calc(100vh - 300px);
+  height: 100%;
   overflow-y: auto;
 `;
 
