@@ -2,7 +2,7 @@ import { memo } from "react";
 import { Handle, Position, type NodeProps } from "reactflow";
 import styled from "styled-components";
 import { Avatar } from "../common/Avatar";
-import type { Employee } from "../../api";
+import type { Employee } from "../../services/types/employee";
 
 interface EmployeeNodeData {
   employee: Employee;

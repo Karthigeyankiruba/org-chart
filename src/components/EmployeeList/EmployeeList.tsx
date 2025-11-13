@@ -1,7 +1,8 @@
 import EmployeeItem from "./EmployeeItem";
-import { useGetEmployees, type Employee } from "../../api";
+import { useGetEmployees } from "../../api";
 import { SkeletonEmployeeList } from "./EmployeeListSkeleton";
 import styled from "styled-components";
+import type { Employee } from "../../services/types/employee";
 
 const EmployeeListContainer = styled.div`
   display: flex;
