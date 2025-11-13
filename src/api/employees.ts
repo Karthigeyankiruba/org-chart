@@ -64,3 +64,15 @@ export const useUpdateEmployee = () => {
     },
   });
 };
+
+const getEmployee = async (id: string): Promise<Employee> => {
+  const { data } = await apiClient.get(`/employees/${id}`);
+  return data.employee;
+};
+
+export const useGetEmployee = (id: string) =>
+  useQuery({
+    queryKey: ["employee", id],
+    queryFn: () => getEmployee(id) as Promise<Employee>,
+    enabled: !!id,
+  });

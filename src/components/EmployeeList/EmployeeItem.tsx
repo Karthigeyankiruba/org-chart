@@ -8,14 +8,21 @@ import {
   EmployeeDesignation,
   TeamTag,
 } from "./EmployeeItem.styles";
+import { useNavigate } from "react-router";
 
 interface EmployeeItemProps {
   employee: Employee;
 }
 
 const EmployeeItem = ({ employee }: EmployeeItemProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/employee/${employee.id}`);
+  };
+
   return (
-    <EmployeeCard>
+    <EmployeeCard onClick={handleClick}>
       <AvatarWrapper>
         <Avatar imageUrl={employee.avatar} name={employee.name} size="48px" />
       </AvatarWrapper>

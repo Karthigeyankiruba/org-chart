@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ReactFlow, {
   type Node,
   type Edge,
@@ -11,6 +12,7 @@ import ReactFlow, {
   type NodeTypes,
   type NodeChange,
   type NodeDragHandler,
+  type NodeMouseHandler,
 } from "reactflow";
 import dagre from "dagre";
 import toast from "react-hot-toast";
@@ -28,6 +30,7 @@ interface OrgChartProps {
 }
 
 const OrgChart = ({ team }: OrgChartProps) => {
+  const navigate = useNavigate();
   const { data: employees = [] } = useGetEmployees(undefined, team);
   const updateEmployeeMutation = useUpdateEmployee();
   const prevEmployeesRef = useRef<string>("");
@@ -322,6 +325,17 @@ const OrgChart = ({ team }: OrgChartProps) => {
     ]
   );
 
+  // Handle node click - navigate to employee details
+  const onNodeClick: NodeMouseHandler = useCallback(
+    (_, node) => {
+      console.log("node", node);
+      if (node.data?.employee) {
+        navigate(`/employee/${node.data.employee.id}`);
+      }
+    },
+    [navigate]
+  );
+
   // Handle node position changes
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -341,6 +355,7 @@ const OrgChart = ({ team }: OrgChartProps) => {
         onNodeDragStart={onNodeDragStart}
         onNodeDrag={onNodeDrag}
         onNodeDragStop={onNodeDragStop}
+        onNodeClick={onNodeClick}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.2, maxZoom: 1.5 }}
