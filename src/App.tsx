@@ -1,7 +1,7 @@
-import "./App.css";
+import { OrgChart } from "./components/OrgChart";
 
 function App() {
-  return <>Org Employee Flow</>;
+  return <OrgChart />;
 }
 
 export default App;
