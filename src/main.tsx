@@ -7,9 +7,9 @@ import { makeServer } from "./services/server";
 import AppRoutes from "./AppRoutes.tsx";
 import { FilterProvider } from "./contexts/FilterContext.tsx";
 
-if (import.meta.env.DEV) {
-  makeServer({ environment: "development" });
-}
+// Initialize MirageJS server for both development and production
+// This is needed because we're using mock data for the demo
+makeServer({ environment: import.meta.env.DEV ? "development" : "production" });
 
 const queryClient = new QueryClient();
 

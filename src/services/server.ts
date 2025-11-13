@@ -7,8 +7,8 @@ import type { AnyFactories, Assign, ModelDefinition } from "miragejs/-types";
 export function makeServer({ environment = "development" } = {}) {
   const server = createServer({
     environment,
-    logging: true, // Log all requests to console
-    trackRequests: true, // Track requests for debugging
+    logging: environment === "development", // Only log in development
+    trackRequests: environment === "development", // Only track in development
 
     models: {
       employee: Model.extend<Partial<Employee>>({}),
