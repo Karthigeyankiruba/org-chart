@@ -1,14 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "./index";
-
-export interface Employee {
-  id: string;
-  name: string;
-  designation: string;
-  team: string;
-  managerId: string | null;
-}
-
+import type { Employee } from "../services/types/employee";
 // Fetch all employees with optional filters
 const getEmployees = async (
   search?: string,

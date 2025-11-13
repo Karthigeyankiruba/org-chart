@@ -60,6 +60,16 @@ export function makeServer({ environment = "development" } = {}) {
         return employees;
       });
 
+      // Get single employee by ID
+      this.get("/employees/:id", (schema, request) => {
+        const id = request.params.id;
+        const employee = schema.find("employee", id);
+        if (!employee) {
+          return new Response(404, {}, { error: "Employee not found" });
+        }
+        return { employee };
+      });
+
       // Get employees by team
       this.get("/employees/team/:team", (schema, request) => {
         const team = request.params.team;
