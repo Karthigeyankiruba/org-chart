@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import "./DashboardMain.style.css";
+import { Main, MainContent } from "./DashboardMain.styles";
 
 const DashboardMain = () => {
   return (
-    <main className="dashboard-main">
-      <div className="main-content">
+    <Main>
+      <MainContent>
         <Outlet />
-      </div>
-    </main>
+      </MainContent>
+    </Main>
   );
 };
 

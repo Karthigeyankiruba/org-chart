@@ -2,15 +2,15 @@ import { EmployeeList } from "../../components/EmployeeList";
 import { Filters } from "../../components/Filters";
 import { useFilters } from "../../contexts/FilterContext";
 import { useDebounce } from "../../hooks/useDebounce";
-import "./DashboardAside.style.css";
+import { Aside, AsideContent } from "./DashboardAside.styles";
 
 const DashboardAside = () => {
   const { search, selectedTeam, setSearch, setSelectedTeam } = useFilters();
   const debouncedSearch = useDebounce(search, 300);
 
   return (
-    <aside className="dashboard-aside">
-      <div className="aside-content">
+    <Aside>
+      <AsideContent>
         <Filters
           search={search}
           selectedTeam={selectedTeam}
@@ -18,8 +18,8 @@ const DashboardAside = () => {
           onTeamChange={setSelectedTeam}
         />
         <EmployeeList search={debouncedSearch} team={selectedTeam} />
-      </div>
-    </aside>
+      </AsideContent>
+    </Aside>
   );
 };
 

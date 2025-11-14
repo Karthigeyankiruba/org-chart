@@ -1,17 +1,17 @@
 import DashboardTopBar from "./DashboardTopBar";
 import DashboardAside from "./DashboardAside";
 import DashboardMain from "./DashboardMain";
-import "./Dashboard.style.css";
+import { DashboardContainer, DashboardBody } from "./Dashboard.styles";
 
 const Dashboard = () => {
   return (
-    <div className="dashboard">
-      <DashboardTopBar />
-      <div className="dashboard-body">
-        <DashboardAside />
+    <DashboardContainer>
+      <DashboardAside />
+      <DashboardBody>
+        <DashboardTopBar />
         <DashboardMain />
-      </div>
-    </div>
+      </DashboardBody>
+    </DashboardContainer>
   );
 };
 
