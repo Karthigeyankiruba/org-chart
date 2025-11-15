@@ -126,19 +126,21 @@ const OrgChart = () => {
   const nodesIntersect = useCallback((node1: Node, node2: Node): boolean => {
     const nodeWidth = 220;
     const nodeHeight = 140;
-    const threshold = 80; // Extra padding for easier drop
+    const threshold = 100;
 
     const x1 = node1.position.x;
     const y1 = node1.position.y;
     const x2 = node2.position.x;
     const y2 = node2.position.y;
 
-    const isOverX =
-      x1 >= x2 - nodeWidth / 2 - threshold &&
-      x1 <= x2 + nodeWidth / 2 + threshold;
-    const isOverY =
-      y1 >= y2 - nodeHeight / 2 - threshold &&
-      y1 <= y2 + nodeHeight / 2 + threshold;
+    // Check if node1's center is within node2's bounds (with threshold)
+    const node2Left = x2 - nodeWidth / 2 - threshold;
+    const node2Right = x2 + nodeWidth / 2 + threshold;
+    const node2Top = y2 - nodeHeight / 2 - threshold;
+    const node2Bottom = y2 + nodeHeight / 2 + threshold;
+
+    const isOverX = x1 >= node2Left && x1 <= node2Right;
+    const isOverY = y1 >= node2Top && y1 <= node2Bottom;
 
     return isOverX && isOverY;
   }, []);
@@ -159,30 +161,27 @@ const OrgChart = () => {
 
   // Update nodes when drag state changes (for visual feedback)
   useEffect(() => {
-    if (targetNodeId || draggedNodeId) {
-      setNodes((nds) =>
-        nds.map((node) => ({
+    setNodes((nds) =>
+      nds.map((node) => {
+        const isTarget = targetNodeId === node.id;
+        const isDragging = draggedNodeId === node.id;
+        // Only update if the state actually changed to avoid unnecessary re-renders
+        if (
+          node.data?.isTarget === isTarget &&
+          node.data?.isDragging === isDragging
+        ) {
+          return node;
+        }
+        return {
           ...node,
           data: {
             ...node.data,
-            isTarget: targetNodeId === node.id,
-            isDragging: draggedNodeId === node.id,
+            isTarget,
+            isDragging,
           },
-        }))
-      );
-    } else {
-      // Reset all nodes when not dragging
-      setNodes((nds) =>
-        nds.map((node) => ({
-          ...node,
-          data: {
-            ...node.data,
-            isTarget: false,
-            isDragging: false,
-          },
-        }))
-      );
-    }
+        };
+      })
+    );
   }, [targetNodeId, draggedNodeId, setNodes]);
 
   const onConnect = useCallback(
@@ -209,25 +208,32 @@ const OrgChart = () => {
   // Handle node drag - track when dragging over another node
   const onNodeDrag: NodeDragHandler = useCallback(
     (_, node) => {
-      if (!draggedNodeId || draggedNodeId === node.id) return;
+      // Only process if this is the node being dragged
+      if (!draggedNodeId || draggedNodeId !== node.id) {
+        return;
+      }
 
       // Use nodesRef to get the latest nodes state
       const currentNodes = nodesRef.current;
 
       // Find intersecting nodes by checking all current nodes
-      const targetNode = currentNodes.find((n) => {
-        if (n.id === draggedNodeId) return false;
-        // Use the dragged node's current position from the event
-        return nodesIntersect(node, n);
-      });
+      // The node parameter has the current drag position from React Flow
+      let foundTarget: string | null = null;
 
-      if (targetNode) {
-        setTargetNodeId(targetNode.id);
-      } else {
-        setTargetNodeId(null);
+      for (const n of currentNodes) {
+        if (n.id === draggedNodeId) continue;
+        if (nodesIntersect(node, n)) {
+          foundTarget = n.id;
+          break;
+        }
+      }
+
+      // Update target node ID if it changed
+      if (foundTarget !== targetNodeId) {
+        setTargetNodeId(foundTarget);
       }
     },
-    [draggedNodeId, nodesIntersect]
+    [draggedNodeId, nodesIntersect, targetNodeId]
   );
 
   // Handle node drag stop - update manager if dropped on another node
@@ -323,15 +329,18 @@ const OrgChart = () => {
     ]
   );
 
-  // Handle node click - navigate to employee details
+  // Handle node click - navigate to employee details (only if not dragging)
   const onNodeClick: NodeMouseHandler = useCallback(
     (_, node) => {
-      console.log("node", node);
+      // Don't navigate if we're currently dragging
+      if (draggedNodeId) {
+        return;
+      }
       if (node.data?.employee) {
         navigate(`/employee/${node.data.employee.id}`);
       }
     },
-    [navigate]
+    [navigate, draggedNodeId]
   );
 
   // Handle node position changes
